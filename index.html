@@ -3,8 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>노바토 야호팀 - NOVATO YAHO</title>
-<style>
+  <title>노바토 야호팀 - NOVATO YAHO</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./야호/권재영.png">
+  <meta name="theme-color" content="#FF6B00">
+  <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -26,6 +29,45 @@
   }
 
   html { scroll-behavior: smooth; }
+  
+  /* PWA 설치 안내 배너 */
+  .pwa-install-banner {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-card);
+    border: 1px solid var(--orange);
+    border-radius: 12px;
+    padding: 16px 24px;
+    display: none;
+    align-items: center;
+    gap: 16px;
+    z-index: 1000;
+    box-shadow: 0 8px 32px rgba(255,107,0,0.3);
+    max-width: 90vw;
+  }
+
+  .pwa-install-banner.show {
+    display: flex;
+  }
+
+  .pwa-install-banner p {
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .pwa-install-banner button {
+    background: var(--orange);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
 
   body {
     font-family: 'Noto Sans KR', sans-serif;
@@ -1057,6 +1099,44 @@
       }
     });
   });
+
+  // Service Worker 등록 (PWA)
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js')
+      .then((registration) => {
+        console.log('Service Worker 등록 성공:', registration.scope);
+      })
+      .catch((error) => {
+        console.log('Service Worker 등록 실패:', error);
+      });
+  }
+
+  // PWA 설치 프롬프트
+  let deferredPrompt;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    const banner = document.createElement('div');
+    banner.className = 'pwa-install-banner show';
+    banner.innerHTML = `
+      <p>📱 앱으로 설치하시겠습니까?</p>
+      <button onclick="installPWA()">설치</button>
+      <button onclick="this.parentElement.remove()" style="background: transparent; color: var(--text-muted); border: 1px solid var(--border-color);">닫기</button>
+    `;
+    document.body.appendChild(banner);
+  });
+
+  function installPWA() {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('PWA 설치 완료');
+        }
+        deferredPrompt = null;
+      });
+    }
+  }
 </script>
 </body>
 </html>

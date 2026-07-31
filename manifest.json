@@ -1,0 +1,24 @@
+{
+  "name": "노바토 야호팀",
+  "short_name": "야호팀",
+  "description": "노바토 야호팀 코칭 영상 분석 및 코멘트 도구",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0D0D0D",
+  "theme_color": "#FF6B00",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "./야호/권재영.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./야호/권재영.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
