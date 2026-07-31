@@ -1144,6 +1144,13 @@
         gifPlaceholder.querySelector('p').textContent = 'GIF 파일을 찾을 수 없습니다.';
       };
       img.src = gifSrc + '?v=' + slide.id + '&t=' + Date.now();
+      
+      // 캐시된 이미지는 onload가 발생하지 않을 수 있으므로 체크
+      if (img.complete) {
+        gifImage.src = gifSrc + '?v=' + slide.id + '&t=' + Date.now();
+        gifImage.style.display = 'block';
+        gifPlaceholder.style.display = 'none';
+      }
     }
 
     badgeNum.textContent = slide.id;
