@@ -1128,7 +1128,7 @@
 
     const gifSrc = slide.gif;
     if (gifSrc) {
-      gifImage.src = gifSrc;
+      gifImage.src = gifSrc + '?v=' + slide.id;
       gifImage.style.display = 'block';
       gifPlaceholder.style.display = 'none';
       gifImage.onerror = function() {
