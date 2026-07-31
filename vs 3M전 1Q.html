@@ -633,6 +633,76 @@
     }
   }
 
+  /* ===== MOBILE LANDSCAPE MODE ===== */
+  @media screen and (orientation: landscape) and (max-height: 500px) {
+    .viewer {
+      flex-direction: row;
+      overflow: hidden;
+      padding: 10px 16px;
+      gap: 10px;
+    }
+
+    .gif-container {
+      flex: 2;
+      height: 100%;
+      aspect-ratio: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gif-container img {
+      max-height: 90vh;
+      width: auto;
+      max-width: 100%;
+      object-fit: contain;
+    }
+
+    .cards-grid {
+      flex: 1;
+      overflow-y: auto;
+      grid-template-columns: 1fr !important;
+      gap: 8px;
+    }
+
+    .card {
+      padding: 10px;
+    }
+
+    .card .card-content {
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .nav-controls {
+      position: fixed;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 4px 10px;
+      gap: 6px;
+      z-index: 100;
+    }
+
+    .nav-controls button {
+      width: 28px;
+      height: 28px;
+      font-size: 12px;
+    }
+
+    .nav-controls .slide-counter {
+      font-size: 10px;
+      min-width: 40px;
+    }
+
+    .keyboard-hint {
+      display: none !important;
+    }
+  }
+
   /* ===== ANIMATIONS ===== */
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
@@ -723,7 +793,7 @@
         <div class="icon">🏀</div>
         <p>GIF 파일을 불러오는 중입니다...</p>
       </div>
-      <img id="gifImage" style="display:none;" alt="플레이 영상" />
+      <img id="gifImage" style="display:none;" loading="lazy" alt="플레이 영상" />
       <div class="play-badge" id="playBadge">🏀 Play #<span id="badgeNum">1</span></div>
     </div>
 
