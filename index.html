@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>노바토 야호팀 - NOVATO YAHO</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  :root {
+    --orange: #FF6B00;
+    --orange-light: #FF8C38;
+    --orange-dark: #CC5500;
+    --orange-glow: rgba(255,107,0,0.3);
+    --bg-primary: #0D0D0D;
+    --bg-secondary: #1A1A1A;
+    --bg-card: #1F1F1F;
+    --text-primary: #F5F5F5;
+    --text-secondary: #AAAAAA;
+    --text-muted: #666666;
+    --border-color: #2A2A2A;
+    --shadow: 0 8px 32px rgba(0,0,0,0.5);
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-primary); }
+  ::-webkit-scrollbar-thumb { background: var(--orange-dark); border-radius: 3px; }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 100px 24px 80px;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 50%, rgba(255,107,0,0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 50%, rgba(255,107,0,0.04) 0%, transparent 60%);
+    animation: gradientShift 20s ease-in-out infinite alternate;
+  }
+
+  @keyframes gradientShift {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(-5%, -5%) rotate(5deg); }
+  }
+
+  .hero-content {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: rgba(255,107,0,0.12);
+    border: 1px solid rgba(255,107,0,0.25);
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--orange);
+    letter-spacing: 2px;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+  }
+
+  .hero-logo {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 52px;
+    margin: 0 auto 28px;
+    box-shadow: 0 0 60px var(--orange-glow), 0 0 120px rgba(255,107,0,0.1);
+    animation: pulseGlow 3s ease-in-out infinite;
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 60px var(--orange-glow), 0 0 120px rgba(255,107,0,0.1); }
+    50% { box-shadow: 0 0 80px var(--orange-glow), 0 0 160px rgba(255,107,0,0.15); }
+  }
+
+  .hero h1 {
+    font-size: clamp(40px, 8vw, 80px);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .hero h1 .highlight {
+    background: linear-gradient(135deg, var(--orange), var(--orange-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: clamp(16px, 2.5vw, 22px);
+    color: var(--text-secondary);
+    font-weight: 300;
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+    font-size: 12px;
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  .scroll-hint .arrow {
+    width: 24px;
+    height: 24px;
+    border-right: 2px solid var(--text-muted);
+    border-bottom: 2px solid var(--text-muted);
+    transform: rotate(45deg);
+  }
+
+  /* ===== SECTION ===== */
+  .section {
+    padding: 100px 0;
+    position: relative;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .section-badge {
+    display: inline-block;
+    background: rgba(255,107,0,0.1);
+    border: 1px solid rgba(255,107,0,0.2);
+    padding: 4px 16px;
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--orange);
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+
+  .section-header h2 {
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 800;
+    margin-bottom: 12px;
+  }
+
+  .section-header p {
+    font-size: 16px;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .divider {
+    width: 60px;
+    height: 3px;
+    background: var(--orange);
+    border-radius: 2px;
+    margin: 0 auto 20px;
+  }
+
+  /* ===== TEAM PHOTO ===== */
+  .team-photo-section {
+    background: var(--bg-secondary);
+  }
+
+  .team-photo-wrapper {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+  }
+
+  .team-photo-wrapper img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .photo-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 40px 32px 28px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.85));
+  }
+
+  .photo-overlay h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .photo-overlay p {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  /* ===== TEAM INFO ===== */
+  .team-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+  }
+
+  .info-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 28px;
+    transition: var(--transition);
+  }
+
+  .info-card:hover {
+    border-color: rgba(255,107,0,0.2);
+    transform: translateY(-2px);
+  }
+
+  .info-card .card-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(255,107,0,0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+
+  .info-card h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .info-card p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .info-card ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 12px;
+  }
+
+  .info-card ul li {
+    font-size: 14px;
+    color: var(--text-secondary);
+    padding: 5px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .info-card ul li::before {
+    content: '🏀';
+    font-size: 12px;
+  }
+
+  /* ===== MEMBERS ===== */
+  .members-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .member-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: var(--transition);
+    position: relative;
+  }
+
+  .member-card:hover {
+    border-color: rgba(255,107,0,0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  }
+
+  .member-photo-wrap {
+    width: 100%;
+    aspect-ratio: 1;
+    background: var(--bg-secondary);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .member-photo-wrap .photo-crop {
+    width: 55%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+    border: 3px solid rgba(255,107,0,0.3);
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    flex-shrink: 0;
+  }
+
+  .member-photo-wrap .photo-crop img {
+    width: 200%;
+    height: 100%;
+    object-fit: cover;
+    object-position: left center;
+    display: block;
+    position: absolute;
+    inset: 0;
+  }
+
+  .member-photo-wrap .photo-icon {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    z-index: 3;
+    font-size: 24px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+    opacity: 0.9;
+    transition: var(--transition);
+    pointer-events: none;
+    background: rgba(0,0,0,0.5);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .member-card:hover .member-photo-wrap .photo-icon {
+    opacity: 0.5;
+    transform: scale(0.85);
+  }
+
+  .member-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--orange);
+    border: 1px solid rgba(255,107,0,0.3);
+  }
+
+  .member-info {
+    padding: 20px;
+  }
+
+  .member-name {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  .member-number {
+    font-size: 13px;
+    color: var(--orange);
+    font-weight: 600;
+  }
+
+  .member-role {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  .member-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-top: 10px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-color);
+  }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    padding: 40px 0;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .footer-logo {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+
+  .footer-logo span {
+    color: var(--orange);
+  }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease;
+  }
+
+  .animate-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .hero {
+      padding: 80px 20px 60px;
+    }
+
+    .hero-logo {
+      width: 90px;
+      height: 90px;
+      font-size: 40px;
+    }
+
+    .section {
+      padding: 60px 0;
+    }
+
+    .section-header {
+      margin-bottom: 40px;
+    }
+
+    .team-info-grid {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .info-card {
+      padding: 20px;
+    }
+
+    .members-grid {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 14px;
+    }
+
+    .member-info {
+      padding: 14px;
+    }
+
+    .member-name {
+      font-size: 15px;
+    }
+
+    .photo-overlay {
+      padding: 24px 20px 16px;
+    }
+
+    .photo-overlay h3 {
+      font-size: 18px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .members-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .member-info {
+      padding: 10px;
+    }
+
+    .member-name {
+      font-size: 13px;
+    }
+
+    .member-number {
+      font-size: 11px;
+    }
+
+    .member-desc {
+      font-size: 11px;
+      margin-top: 6px;
+      padding-top: 6px;
+    }
+
+    .member-badge {
+      font-size: 9px;
+      padding: 2px 8px;
+    }
+  }
+  /* ===== NAV ===== */
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(13,13,13,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0 24px;
+  }
+
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .nav-logo .logo-icon {
+    width: 34px;
+    height: 34px;
+    background: var(--orange);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    font-weight: 900;
+    color: #fff;
+    box-shadow: 0 0 16px var(--orange-glow);
+  }
+
+  .nav-logo span {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 8px;
+    transition: var(--transition);
+  }
+
+  .nav-links a:hover {
+    color: var(--orange);
+    background: rgba(255,107,0,0.08);
+  }
+
+  .nav-links a.active {
+    color: var(--orange);
+    background: rgba(255,107,0,0.1);
+  }
+
+  .nav-links a.cta {
+    background: var(--orange);
+    color: #fff;
+    font-weight: 700;
+  }
+
+  .nav-links a.cta:hover {
+    background: var(--orange-light);
+    box-shadow: 0 0 20px var(--orange-glow);
+  }
+
+  /* ===== COACHING FILMS SECTION ===== */
+  .films-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .film-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 32px;
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .film-card:hover {
+    border-color: var(--orange);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  }
+
+  .film-card .film-icon {
+    font-size: 36px;
+  }
+
+  .film-card h3 {
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .film-card p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .film-card .film-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,107,0,0.1);
+    color: var(--orange);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 14px;
+    border-radius: 20px;
+    align-self: flex-start;
+    margin-top: 4px;
+  }
+
+  @media (max-width: 768px) {
+    .nav-links a:not(.cta) {
+      display: none;
+    }
+    .films-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="logo-icon">🏀</div>
+      <span>노바토 야호</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="active">홈</a>
+      <a href="index.html#team">팀 소개</a>
+      <a href="index.html#members">선수단</a>
+      <a href="index.html#films">코칭 영상</a>
+      <a href="vs 3M전 1Q.html" class="cta">1Q 분석</a>
+      <a href="vs 3M전 3Q.html" class="cta">3Q 분석</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">NOVATO BASKETBALL</div>
+    <div class="hero-logo">🏀</div>
+    <h1>
+      노바토<br>
+      <span class="highlight">야호팀</span>
+    </h1>
+    <p class="hero-sub">
+      함께 뛰고, 함께 성장하는<br>
+      노바토 야호팀입니다.
+    </p>
+    <div class="scroll-hint">
+      <span>SCROLL</span>
+      <div class="arrow"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TEAM PHOTO ===== -->
+<section class="section team-photo-section" id="team">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-badge">NOVATO YAHO</div>
+      <h2>팀 소개</h2>
+      <div class="divider"></div>
+      <p>2026 Summer League · 함께 만들어가는 우리 농구</p>
+    </div>
+
+    <div class="team-photo-wrapper animate-in">
+      <img src="./야호/팀.jpg" alt="노바토 야호팀 단체 사진" onerror="this.style.display='none'">
+      <div class="photo-overlay">
+        <h3>🏀 노바토 야호팀</h3>
+        <p>NOVATO YAHO · 2026 Summer League</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TEAM INFO ===== -->
+<section class="section">
+  <div class="container">
+    <div class="team-info-grid">
+      <div class="info-card animate-in">
+        <div class="card-icon">🎯</div>
+        <h3>팀 철학</h3>
+        <p><strong>넓은 스페이싱</strong>과 <strong>유기적인 오프더볼 무브</strong>,<br>
+        <strong>스크린 이후 2차 연계</strong>, 그리고 <strong>목청껏 토킹</strong>하는 수비.</p>
+        <ul>
+          <li>간결한 플레이 - 드리블은 최소화, 패스는 최대화</li>
+          <li>스페이싱 - 코트의 모든 공간을 활용하라</li>
+          <li>토킹 - 조용한 수비는 죽은 수비다</li>
+          <li>함께 성장 - 개인보다 팀이 먼저다</li>
+        </ul>
+      </div>
+
+      <div class="info-card animate-in">
+        <div class="card-icon">🏆</div>
+        <h3>팀 목표</h3>
+        <p>기본기와 팀워크를 바탕으로<br>
+        한 단계 더 성장하는 시즌.</p>
+        <ul>
+          <li>스페이싱 농구 완성</li>
+          <li>수비 토킹 문화 정착</li>
+          <li>트랜지션 속도 향상</li>
+          <li>팀 케미스트리 극대화</li>
+        </ul>
+      </div>
+
+      <div class="info-card animate-in">
+        <div class="card-icon">📢</div>
+        <h3>감독의 한마디</h3>
+        <p style="font-style: italic; color: var(--text-primary);">
+          "우리는 함께 달리고, 함께 넘어지고, 함께 일어납니다.<br>
+          좋은 플레이는 칭찬하고, 아쉬운 부분은 솔직하게 이야기합시다.<br>
+          <strong style="color: var(--orange);">지금보다 더 나은 팀이 되는 것</strong>,<br>
+          그게 우리의 목표입니다."
+        </p>
+        <p style="font-size: 12px; color: var(--orange); margin-top: 12px; font-weight: 600;">
+          — 노바토 야호팀 감독
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MEMBERS ===== -->
+<section class="section team-photo-section" id="members">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-badge">PLAYERS</div>
+      <h2>선수단</h2>
+      <div class="divider"></div>
+      <p>함께 뛰는 동료들, 서로를 알면 더 강해진다</p>
+    </div>
+
+    <div class="members-grid">
+      <div class="member-card animate-in">
+        <div class="member-photo-wrap">
+          <div class="photo-crop">
+            <img src="./야호/오정교.png" alt="정교형">
+          </div>
+          <span class="photo-icon">🏃</span>
+        </div>
+        <div class="member-badge">🔥 핵심</div>
+        <div class="member-info">
+          <div class="member-name">정교형</div>
+          <div class="member-number">#내외곽 스코어러</div>
+          <div class="member-role">🎯 내외곽에서 뛰어난 득점력</div>
+          <div class="member-desc">드리블 과다와 간결함 사이에서 줄다리기. 스페이싱을 가장 잘 이해하는 선수. 백도어 컷은 예술! 내외곽에서 뛰어난 스코어러가 되자!</div>
+        </div>
+      </div>
+
+      <div class="member-card animate-in">
+        <div class="member-photo-wrap">
+          <div class="photo-crop">
+            <img src="./야호/권재영.png" alt="권재영">
+          </div>
+          <span class="photo-icon">🛡️</span>
+        </div>
+        <div class="member-badge">🔥 에이스</div>
+        <div class="member-info">
+          <div class="member-name">권재영</div>
+          <div class="member-number">#윙 수비수</div>
+          <div class="member-role">🎯 스크린 대처 & 컷인</div>
+          <div class="member-desc">왕년에 에이스 모습을 다시 보여주자! 혼(Horn) 수비 연습 필요. 컷인 방향 선택이 점점 좋아짐. 0도 코너에서 볼 받을 준비를 항상!</div>
+        </div>
+      </div>
+
+      <div class="member-card animate-in">
+        <div class="member-photo-wrap">
+          <div class="photo-crop">
+            <img src="./야호/심준.png" alt="심준">
+          </div>
+          <span class="photo-icon">🏆</span>
+        </div>
+        <div class="member-badge">🏆 최고</div>
+        <div class="member-info">
+          <div class="member-name">심준</div>
+          <div class="member-number">#팀내 최고센터</div>
+          <div class="member-role">🎯 공수겸장</div>
+          <div class="member-desc">팀내 최고센터, 공수겸장! 화이팅!! 공간을 넓게 비워두는 센스 탁월하고 어려운 볼도 잘 받아냄. 컷인 타이밍이 점점 좋아지는 중.</div>
+        </div>
+      </div>
+
+      <div class="member-card animate-in">
+        <div class="member-photo-wrap">
+          <div class="photo-crop">
+            <img src="./야호/김민철.png" alt="김민철">
+          </div>
+          <span class="photo-icon">💪</span>
+        </div>
+        <div class="member-badge">💪 1민철</div>
+        <div class="member-info">
+          <div class="member-name">김민철</div>
+          <div class="member-number">#1민철</div>
+          <div class="member-role">🎯 운영 & 대인방어</div>
+          <div class="member-desc">1민철로 거듭나고 있음! 뛰어난 운영능력과 대인방어능력! 자유투와 땀은 옥의티. 공간을 침범하지 않고 적절한 위치에서 패스 받는 능력 돋보임.</div>
+        </div>
+      </div>
+
+      <div class="member-card animate-in">
+        <div class="member-photo-wrap">
+          <div class="photo-crop">
+            <img src="./야호/이세영.png" alt="이세영">
+          </div>
+          <span class="photo-icon">🔥</span>
+        </div>
+        <div class="member-badge">🔥 1옵션</div>
+        <div class="member-info">
+          <div class="member-name">이세영</div>
+          <div class="member-number">#가드호소인</div>
+          <div class="member-role">🎯 아이솔레이션 & 득점력</div>
+          <div class="member-desc">가드호소인! 1대1 아이솔레이션 능력이 매우 우수함. 1옵션 윙자원으로의 득점력을 기대함! 오픈 찬스에서 망설임 없이 바로 올라가자!</div>
+        </div>
+      </div>
+
+      <div class="member-card animate-in">
+        <div class="member-photo-wrap">
+          <div class="photo-crop">
+            <img src="./야호/김정현.png" alt="김정현">
+          </div>
+          <span class="photo-icon">🎯</span>
+        </div>
+        <div class="member-badge">✅ 굳은일</div>
+        <div class="member-info">
+          <div class="member-name">김정현</div>
+          <div class="member-number">#팀내 굳은일 담당</div>
+          <div class="member-role">🎯 3점슛 & 수비</div>
+          <div class="member-desc">팀내 굳은일 담당, 3점슛이 좋음! 파울관리만 잘 해보자. 뒷선에서 상황 잘 읽고 콜하는 능력도 중요. 리바운드 참여도 좋음.</div>
+        </div>
+      </div>
+
+      <div class="member-card animate-in">
+        <div class="member-photo-wrap">
+          <div class="photo-crop">
+            <img src="./야호/김휘년.png" alt="김휘년">
+          </div>
+          <span class="photo-icon">💨</span>
+        </div>
+        <div class="member-badge">💨 운동능력</div>
+        <div class="member-info">
+          <div class="member-name">김휘년</div>
+          <div class="member-number">#보조핸들러</div>
+          <div class="member-role">🎯 3점슛 & 운동능력</div>
+          <div class="member-desc">보조핸들러. 운동능력이 매우 좋고 의욕이 좋지만 경험이 부족함. 의외의 3점슛 능력자! 윙자리 채우는 능력이 뛰어나 3점 찬스 창출에 탁월.</div>
+        </div>
+      </div>
+
+      <div class="member-card animate-in">
+        <div class="member-photo-wrap">
+          <div class="photo-crop">
+            <img src="./야호/이용완.png" alt="이용완">
+          </div>
+          <span class="photo-icon">🎯</span>
+        </div>
+        <div class="member-badge">🔥 메인핸들러</div>
+        <div class="member-info">
+          <div class="member-name">이용완</div>
+          <div class="member-number">#메인핸들러 +1</div>
+          <div class="member-role">🎯 돌파 & 운영능력</div>
+          <div class="member-desc">우리팀 메인핸들러 +1, 득점력 좋음! 돌파능력과 운영능력이 탁월함. 슈팅력 향상과 경험쌓기가 필요. 기대되는 자원!</div>
+        </div>
+      </div>
+
+      <div class="member-card animate-in">
+        <div class="member-photo-wrap">
+          <div class="photo-crop">
+            <img src="./야호/박영민.png" alt="박영민">
+          </div>
+          <span class="photo-icon">🛡️</span>
+        </div>
+        <div class="member-badge">🛡️ 수비</div>
+        <div class="member-info">
+          <div class="member-name">박영민</div>
+          <div class="member-number">#중거리 슈터</div>
+          <div class="member-role">🎯 수비 & 윙자원</div>
+          <div class="member-desc">우리팀 중거리 슈터 윙자원. 수비력이 매우 우수! 슈팅 망설이는게 점점 사라지고 있음. 윙에서의 역할 이해도를 높여 더욱 발전할 것을 기대함!</div>
+        </div>
+      </div>
+
+      <div class="member-card animate-in">
+        <div class="member-photo-wrap">
+          <div class="photo-crop">
+            <img src="./야호/하정우.png" alt="하정우">
+          </div>
+          <span class="photo-icon">⭐</span>
+        </div>
+        <div class="member-badge">⭐ 막내</div>
+        <div class="member-info">
+          <div class="member-name">하정우</div>
+          <div class="member-number">#팀 막내</div>
+          <div class="member-role">🎯 열정 & 성장</div>
+          <div class="member-desc">우리팀 막내! 열정적으로 배워서 팀의 기둥이 되자. 모든 것을 흡수하는 자세가 중요. 미래가 기대되는 선수!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== COACHING FILMS ===== -->
+<section class="section films-section" id="films">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-badge">COACHING FILMS</div>
+      <h2>코칭 영상 분석</h2>
+      <div class="divider"></div>
+      <p>슬라이드 형식으로 제작된 경기 분석 자료를 확인하세요</p>
+    </div>
+
+    <div class="films-grid">
+      <a href="vs 3M전 1Q.html" class="film-card animate-in">
+        <div class="film-icon">🏀</div>
+        <h3>1Q 분석</h3>
+        <p>노바토 야호팀 감독의 시점에서 분석한 1쿼터 코칭 영상.<br>
+        넓은 스페이싱, 유기적인 오프더볼 무브, 스크린 이후 2차 연계, 토킹의 중요성을 강조합니다.</p>
+        <span class="film-tag">12개 슬라이드 · 1Q 분석</span>
+      </a>
+
+      <a href="vs 3M전 3Q.html" class="film-card animate-in">
+        <div class="film-icon">🔥</div>
+        <h3>3Q 분석 (vs 3M)</h3>
+        <p>vs 3M전 3쿼터 집중 분석.<br>
+        공격은 스페이싱 위주, 맨수비는 스크린 걸린 후 대처 위주로 분석했습니다.<br>
+        선수들의 실명을 언급한 날카롭고 유머러스한 피드백!</p>
+        <span class="film-tag">17개 슬라이드 · 3Q · vs 3M</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-logo">🏀 <span>노바토 야호팀</span> · NOVATO YAHO</div>
+    <p>2026 Summer League · Together We Grow</p>
+    <div style="margin-top: 12px; display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+      <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-size: 12px;">홈</a>
+      <a href="index.html#team" style="color: var(--text-muted); text-decoration: none; font-size: 12px;">팀 소개</a>
+      <a href="index.html#members" style="color: var(--text-muted); text-decoration: none; font-size: 12px;">선수단</a>
+      <a href="index.html#films" style="color: var(--text-muted); text-decoration: none; font-size: 12px;">코칭 영상</a>
+      <a href="vs 3M전 1Q.html" style="color: var(--text-muted); text-decoration: none; font-size: 12px;">1Q 분석</a>
+      <a href="vs 3M전 3Q.html" style="color: var(--text-muted); text-decoration: none; font-size: 12px;">3Q 분석</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Intersection Observer for scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.animate-in').forEach(el => {
+    observer.observe(el);
+  });
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
+</body>
+</html>
