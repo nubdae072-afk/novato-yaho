@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>코칭 코멘트 작성 도구 - 노바토 야호팀</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  :root {
+    --orange: #FF6B00;
+    --orange-light: #FF8C38;
+    --orange-dark: #CC5500;
+    --bg-primary: #0D0D0D;
+    --bg-secondary: #1A1A1A;
+    --bg-card: #1F1F1F;
+    --bg-sidebar: #111111;
+    --text-primary: #F5F5F5;
+    --text-secondary: #AAAAAA;
+    --text-muted: #666666;
+    --border-color: #2A2A2A;
+    --shadow: 0 8px 32px rgba(0,0,0,0.5);
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-primary); }
+  ::-webkit-scrollbar-thumb { background: var(--orange-dark); border-radius: 3px; }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ===== HEADER ===== */
+  .header {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    padding: 20px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .header-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .header-logo .logo-icon {
+    width: 34px;
+    height: 34px;
+    background: var(--orange);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    font-weight: 900;
+    color: #fff;
+    box-shadow: 0 0 16px rgba(255,107,0,0.3);
+  }
+
+  .header-logo span {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .header-links {
+    display: flex;
+    gap: 8px;
+  }
+
+  .header-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 8px;
+    transition: var(--transition);
+  }
+
+  .header-links a:hover {
+    color: var(--orange);
+    background: rgba(255,107,0,0.08);
+  }
+
+  .header-links a.active {
+    color: var(--orange);
+    background: rgba(255,107,0,0.1);
+  }
+
+  /* ===== MAIN CONTENT ===== */
+  .main-content {
+    padding: 40px 0;
+  }
+
+  .page-title {
+    font-size: clamp(24px, 4vw, 32px);
+    font-weight: 800;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .page-title .icon {
+    font-size: 32px;
+  }
+
+  .page-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+  }
+
+  /* ===== VIDEO SECTION ===== */
+  .video-section {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title .icon {
+    font-size: 20px;
+  }
+
+  .input-group {
+    margin-bottom: 16px;
+  }
+
+  .input-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+  }
+
+  .input-group input {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-family: inherit;
+    transition: var(--transition);
+  }
+
+  .input-group input:focus {
+    outline: none;
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(255,107,0,0.1);
+  }
+
+  .btn {
+    padding: 12px 24px;
+    background: var(--orange);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: inherit;
+  }
+
+  .btn:hover {
+    background: var(--orange-light);
+    box-shadow: 0 0 20px rgba(255,107,0,0.3);
+  }
+
+  .btn:active {
+    transform: scale(0.98);
+  }
+
+  .btn-secondary {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+  }
+
+  .btn-secondary:hover {
+    background: var(--bg-secondary);
+    border-color: var(--orange);
+  }
+
+  .video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    background: var(--bg-primary);
+    margin-top: 16px;
+  }
+
+  .video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  /* ===== TIMELINE SECTION ===== */
+  .timeline-section {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .timeline-controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .timeline-info {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .timeline-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .timeline-info-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .timeline-info-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .timeline-info-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--orange);
+  }
+
+  /* ===== COMMENTS SECTION ===== */
+  .comments-section {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .comment-form {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .comment-form-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .form-row {
+    margin-bottom: 16px;
+  }
+
+  .form-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .form-row label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+  }
+
+  .form-row input,
+  .form-row textarea,
+  .form-row select {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-family: inherit;
+    transition: var(--transition);
+  }
+
+  .form-row input:focus,
+  .form-row textarea:focus,
+  .form-row select:focus {
+    outline: none;
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(255,107,0,0.1);
+  }
+
+  .form-row textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  .form-row select {
+    cursor: pointer;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  /* ===== COMMENTS LIST ===== */
+  .comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .comment-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    transition: var(--transition);
+  }
+
+  .comment-item:hover {
+    border-color: rgba(255,107,0,0.2);
+  }
+
+  .comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .comment-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .comment-time {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 600;
+    background: var(--bg-primary);
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+
+  .comment-type {
+    font-size: 11px;
+    color: var(--orange);
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: rgba(255,107,0,0.1);
+  }
+
+  .comment-content {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+  }
+
+  .comment-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .comment-btn {
+    padding: 6px 12px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-secondary);
+    font-size: 12px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: inherit;
+  }
+
+  .comment-btn:hover {
+    border-color: var(--orange);
+    color: var(--orange);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+  }
+
+  .empty-state .icon {
+    font-size: 48px;
+    opacity: 0.3;
+    margin-bottom: 12px;
+  }
+
+  .empty-state p {
+    font-size: 14px;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .header-inner {
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .header-links a:not(.active) {
+      display: none;
+    }
+
+    .timeline-controls {
+      flex-direction: column;
+    }
+
+    .form-actions {
+      flex-direction: column;
+    }
+
+    .comment-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="header">
+  <div class="header-inner">
+    <a href="index.html" class="header-logo">
+      <div class="logo-icon">🏀</div>
+      <span>노바토 야호팀</span>
+    </a>
+    <div class="header-links">
+      <a href="index.html">홈</a>
+      <a href="index.html#team">팀 소개</a>
+      <a href="index.html#members">선수단</a>
+      <a href="index.html#films">코칭 영상</a>
+      <a href="vs 3M전 1Q.html" class="cta">1Q 분석</a>
+      <a href="vs 3M전 3Q.html" class="cta">3Q 분석</a>
+    </div>
+  </div>
+</header>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main-content">
+  <div class="container">
+    <h1 class="page-title">
+      <span class="icon">📝</span>
+      코칭 코멘트 작성 도구
+    </h1>
+    <p class="page-subtitle">YouTube 영상을 보면서 타임라인별로 코칭 코멘트를 작성하고 저장할 수 있습니다.</p>
+
+    <!-- ===== VIDEO SECTION ===== -->
+    <div class="video-section">
+      <h2 class="section-title">
+        <span class="icon">🎬</span>
+        영상 선택
+      </h2>
+      
+      <div class="input-group">
+        <label for="youtubeUrl">YouTube URL</label>
+        <input 
+          type="text" 
+          id="youtubeUrl" 
+          placeholder="YouTube 영상 URL을 입력하세요 (예: https://www.youtube.com/watch?v=...)"
+        >
+      </div>
+
+      <button class="btn" onclick="loadVideo()">영상 불러오기</button>
+
+      <div class="video-wrapper" id="videoWrapper" style="display: none;">
+        <iframe id="youtubePlayer" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </div>
+    </div>
+
+    <!-- ===== TIMELINE SECTION ===== -->
+    <div class="timeline-section">
+      <h2 class="section-title">
+        <span class="icon">⏱️</span>
+        타임라인 컨트롤
+      </h2>
+
+      <div class="timeline-controls">
+        <button class="btn" onclick="setCurrentTime()">현재 시간 구간 설정</button>
+        <button class="btn btn-secondary" onclick="playPause()">재생/일시정지</button>
+        <button class="btn btn-secondary" onclick="skip(-5)">-5초</button>
+        <button class="btn btn-secondary" onclick="skip(5)">+5초</button>
+      </div>
+
+      <div class="timeline-info">
+        <div class="timeline-info-row">
+          <span class="timeline-info-label">현재 구간 시작</span>
+          <span class="timeline-info-value" id="currentStartTime">00:00</span>
+        </div>
+        <div class="timeline-info-row">
+          <span class="timeline-info-label">현재 구간 종료</span>
+          <span class="timeline-info-value" id="currentEndTime">00:00</span>
+        </div>
+        <div class="timeline-info-row">
+          <span class="timeline-info-label">구간 길이</span>
+          <span class="timeline-info-value" id="segmentDuration">0초</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== COMMENTS SECTION ===== -->
+    <div class="comments-section">
+      <h2 class="section-title">
+        <span class="icon">💬</span>
+        코멘트 작성
+      </h2>
+
+      <div class="comment-form">
+        <div class="comment-form-title">새 코멘트 추가</div>
+        
+        <div class="form-row">
+          <label for="commentTitle">제목</label>
+          <input type="text" id="commentTitle" placeholder="코멘트 제목을 입력하세요">
+        </div>
+
+        <div class="form-row">
+          <label for="commentType">코멘트 유형</label>
+          <select id="commentType">
+            <option value="good-play">✅ Good Play</option>
+            <option value="tactical-tip">💡 Tactical Tip</option>
+            <option value="coach-voice">🔥 Coach's Voice</option>
+            <option value="defense">🛡️ Defense</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label for="commentContent">내용</label>
+          <textarea id="commentContent" placeholder="코칭 코멘트를 작성하세요...&#10;&#10;예:&#10;- 선수 이름: 정교형&#10;- 잘한 점: 스페이싱을 잘 지켰다&#10;- 개선점: 패스 후 무브가 필요하다"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn" onclick="addComment()">코멘트 추가</button>
+          <button class="btn btn-secondary" onclick="clearForm()">초기화</button>
+        </div>
+      </div>
+
+      <h3 class="section-title" style="font-size: 16px; margin-bottom: 12px;">
+        <span class="icon">📋</span>
+        작성된 코멘트 (<span id="commentCount">0</span>)
+      </h3>
+
+      <div class="comments-list" id="commentsList">
+        <div class="empty-state">
+          <div class="icon">📝</div>
+          <p>아직 작성된 코멘트가 없습니다.</p>
+          <p style="font-size: 12px; margin-top: 8px;">영상을 재생하고 타임라인을 설정한 후 코멘트를 작성해보세요.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ===== STATE =====
+  let comments = [];
+  let currentStartTime = 0;
+  let currentEndTime = 0;
+  let player = null;
+  let playerReady = false;
+
+  // ===== YOUTUBE API =====
+  const tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  const firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+  function onYouTubeIframeAPIReady() {
+    playerReady = true;
+  }
+
+  // ===== VIDEO FUNCTIONS =====
+  function loadVideo() {
+    const urlInput = document.getElementById('youtubeUrl');
+    const url = urlInput.value.trim();
+    
+    if (!url) {
+      alert('YouTube URL을 입력해주세요.');
+      return;
+    }
+
+    const videoId = extractVideoId(url);
+    if (!videoId) {
+      alert('올바른 YouTube URL이 아닙니다.');
+      return;
+    }
+
+    const wrapper = document.getElementById('videoWrapper');
+    const iframe = document.getElementById('youtubePlayer');
+    
+    iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1`;
+    wrapper.style.display = 'block';
+  }
+
+  function extractVideoId(url) {
+    const patterns = [
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
+      /youtube\.com\/watch\?v=([^&\n?#]+)/
+    ];
+    
+    for (const pattern of patterns) {
+      const match = url.match(pattern);
+      if (match) return match[1];
+    }
+    return null;
+  }
+
+  function playPause() {
+    const iframe = document.getElementById('youtubePlayer');
+    if (!iframe.contentWindow) return;
+    
+    iframe.contentWindow.postMessage('{"event":"command","func":"playVideo"}', '*');
+  }
+
+  function skip(seconds) {
+    const iframe = document.getElementById('youtubePlayer');
+    if (!iframe.contentWindow) return;
+    
+    iframe.contentWindow.postMessage(`{"event":"command","func":"seekTo","args":${seconds}}`, '*');
+  }
+
+  function setCurrentTime() {
+    const iframe = document.getElementById('youtubePlayer');
+    if (!iframe.contentWindow) {
+      alert('먼저 영상을 불러와주세요.');
+      return;
+    }
+
+    // 현재 시간 가져오기 (YouTube API에서 직접 가져오기는 복잡하므로 입력 받음)
+    const timeInput = prompt('현재 시간을 초 단위로 입력하세요 (예: 65 = 1분 5초):');
+    if (!timeInput) return;
+
+    const currentTime = parseInt(timeInput);
+    if (isNaN(currentTime) || currentTime < 0) {
+      alert('올바른 시간을 입력해주세요.');
+      return;
+    }
+
+    currentStartTime = currentTime;
+    currentEndTime = currentTime + 10; // 기본 10초 구간
+
+    updateTimeDisplay();
+  }
+
+  function updateTimeDisplay() {
+    document.getElementById('currentStartTime').textContent = formatTime(currentStartTime);
+    document.getElementById('currentEndTime').textContent = formatTime(currentEndTime);
+    document.getElementById('segmentDuration').textContent = (currentEndTime - currentStartTime) + '초';
+  }
+
+  function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  }
+
+  // ===== COMMENT FUNCTIONS =====
+  function addComment() {
+    const title = document.getElementById('commentTitle').value.trim();
+    const type = document.getElementById('commentType').value;
+    const content = document.getElementById('commentContent').value.trim();
+
+    if (!title || !content) {
+      alert('제목과 내용을 모두 입력해주세요.');
+      return;
+    }
+
+    if (currentStartTime === 0 && currentEndTime === 0) {
+      alert('타임라인을 먼저 설정해주세요.');
+      return;
+    }
+
+    const comment = {
+      id: Date.now(),
+      title,
+      type,
+      content,
+      startTime: currentStartTime,
+      endTime: currentEndTime,
+      createdAt: new Date().toISOString()
+    };
+
+    comments.push(comment);
+    renderComments();
+    clearForm();
+  }
+
+  function deleteComment(id) {
+    if (!confirm('이 코멘트를 삭제하시겠습니까?')) return;
+    comments = comments.filter(c => c.id !== id);
+    renderComments();
+  }
+
+  function editComment(id) {
+    const comment = comments.find(c => c.id === id);
+    if (!comment) return;
+
+    const newContent = prompt('코멘트 내용을 수정하세요:', comment.content);
+    if (!newContent) return;
+
+    comment.content = newContent;
+    renderComments();
+  }
+
+  function clearForm() {
+    document.getElementById('commentTitle').value = '';
+    document.getElementById('commentType').value = 'good-play';
+    document.getElementById('commentContent').value = '';
+  }
+
+  function renderComments() {
+    const list = document.getElementById('commentsList');
+    document.getElementById('commentCount').textContent = comments.length;
+
+    if (comments.length === 0) {
+      list.innerHTML = `
+        <div class="empty-state">
+          <div class="icon">📝</div>
+          <p>아직 작성된 코멘트가 없습니다.</p>
+          <p style="font-size: 12px; margin-top: 8px;">영상을 재생하고 타임라인을 설정한 후 코멘트를 작성해보세요.</p>
+        </div>
+      `;
+      return;
+    }
+
+    list.innerHTML = comments.map(comment => `
+      <div class="comment-item">
+        <div class="comment-header">
+          <div class="comment-meta">
+            <span class="comment-time">${formatTime(comment.startTime)} - ${formatTime(comment.endTime)}</span>
+            <span class="comment-type">${getTypeLabel(comment.type)}</span>
+          </div>
+        </div>
+        <div class="comment-content">
+          <strong>${escapeHtml(comment.title)}</strong><br>
+          ${escapeHtml(comment.content).replace(/\n/g, '<br>')}
+        </div>
+        <div class="comment-actions">
+          <button class="comment-btn" onclick="editComment(${comment.id})">✏️ 수정</button>
+          <button class="comment-btn" onclick="deleteComment(${comment.id})">🗑️ 삭제</button>
+          <button class="comment-btn" onclick="exportComment(${comment.id})">📤 내보내기</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function getTypeLabel(type) {
+    const labels = {
+      'good-play': '✅ Good Play',
+      'tactical-tip': '💡 Tactical Tip',
+      'coach-voice': "🔥 Coach's Voice",
+      'defense': '🛡️ Defense'
+    };
+    return labels[type] || type;
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function exportComment(id) {
+    const comment = comments.find(c => c.id === id);
+    if (!comment) return;
+
+    const html = generateCommentHTML(comment);
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `comment-${comment.id}.html`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function generateCommentHTML(comment) {
+    return `<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${escapeHtml(comment.title)}</title>
+<style>
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #0D0D0D;
+    color: #F5F5F5;
+    padding: 40px 20px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .comment-card {
+    background: #1F1F1F;
+    border: 1px solid #2A2A2A;
+    border-radius: 12px;
+    padding: 24px;
+    border-left: 3px solid ${getTypeColor(comment.type)};
+  }
+  .comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .comment-time {
+    font-size: 12px;
+    color: #FF6B00;
+    font-weight: 600;
+    background: rgba(255,107,0,0.1);
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+  .comment-type {
+    font-size: 12px;
+    color: #FF6B00;
+    font-weight: 600;
+  }
+  .comment-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .comment-content {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #AAAAAA;
+    white-space: pre-wrap;
+  }
+</style>
+</head>
+<body>
+  <div class="comment-card">
+    <div class="comment-header">
+      <span class="comment-time">${formatTime(comment.startTime)} - ${formatTime(comment.endTime)}</span>
+      <span class="comment-type">${getTypeLabel(comment.type)}</span>
+    </div>
+    <div class="comment-title">${escapeHtml(comment.title)}</div>
+    <div class="comment-content">${escapeHtml(comment.content)}</div>
+  </div>
+</body>
+</html>`;
+  }
+
+  function getTypeColor(type) {
+    const colors = {
+      'good-play': '#22C55E',
+      'tactical-tip': '#3B82F6',
+      'coach-voice': '#FF6B00',
+      'defense': '#A855F7'
+    };
+    return colors[type] || '#FF6B00';
+  }
+
+  // 초기화
+  renderComments();
+</script>
+</body>
+</html>
