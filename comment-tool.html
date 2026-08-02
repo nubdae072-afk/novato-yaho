@@ -13,6 +13,7 @@
     --orange: #FF6B00;
     --orange-light: #FF8C38;
     --orange-dark: #CC5500;
+    --orange-glow: rgba(255,107,0,0.3);
     --bg-primary: #0D0D0D;
     --bg-secondary: #1A1A1A;
     --bg-card: #1F1F1F;
@@ -289,6 +290,68 @@
     color: var(--orange);
   }
 
+  /* ===== CAPTURE SECTION ===== */
+  .capture-section {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .capture-preview {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  .capture-preview img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-bottom: 12px;
+  }
+
+  .capture-preview .time-info {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+
+  .thumbnail-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .thumbnail-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .thumbnail-item:hover {
+    border-color: var(--orange);
+  }
+
+  .thumbnail-item img {
+    width: 100%;
+    border-radius: 4px;
+    margin-bottom: 8px;
+  }
+
+  .thumbnail-item .thumb-info {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
   /* ===== AI SECTION ===== */
   .ai-section {
     background: linear-gradient(135deg, rgba(255,107,0,0.05), rgba(255,107,0,0.02));
@@ -479,6 +542,14 @@
     margin-bottom: 12px;
   }
 
+  .comment-thumbnail {
+    width: 100%;
+    max-width: 320px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border-color);
+  }
+
   .comment-actions {
     display: flex;
     gap: 8px;
@@ -527,6 +598,41 @@
     font-size: 14px;
   }
 
+  /* ===== PUBLISH SECTION ===== */
+  .publish-section {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .publish-preview {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 16px;
+  }
+
+  .publish-preview h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .publish-preview textarea {
+    width: 100%;
+    min-height: 200px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+    padding: 12px;
+    font-family: monospace;
+    font-size: 12px;
+    resize: vertical;
+  }
+
   /* ===== RESPONSIVE ===== */
   @media (max-width: 768px) {
     .header-inner {
@@ -554,6 +660,10 @@
 
     .api-key-input {
       flex-direction: column;
+    }
+
+    .thumbnail-gallery {
+      grid-template-columns: repeat(2, 1fr);
     }
   }
 </style>
@@ -585,7 +695,7 @@
       <span class="icon">📝</span>
       코칭 코멘트 작성 도구
     </h1>
-    <p class="page-subtitle">YouTube 영상을 보면서 타임라인별로 코칭 코멘트를 작성하고 AI로 다듬을 수 있습니다.</p>
+    <p class="page-subtitle">YouTube 영상 구간을 WebP로 저장하고 코멘트를 작성하세요. 여러 코멘트를 HTML로 정리할 수 있습니다.</p>
 
     <!-- ===== VIDEO SECTION ===== -->
     <div class="video-section">
@@ -610,11 +720,11 @@
       </div>
     </div>
 
-    <!-- ===== TIMELINE SECTION ===== -->
+    <!-- ===== TIMELINE & CAPTURE SECTION ===== -->
     <div class="timeline-section">
       <h2 class="section-title">
         <span class="icon">⏱️</span>
-        타임라인 컨트롤
+        타임라인 & 구간 캡처
       </h2>
 
       <div class="timeline-controls">
@@ -638,6 +748,19 @@
           <span class="timeline-info-value" id="segmentDuration">0초</span>
         </div>
       </div>
+
+      <div class="capture-section" style="background: transparent; border: none; padding: 0; margin-bottom: 0;">
+        <button class="btn" onclick="captureFrame()">📸 WebP로 캡처 저장</button>
+        <button class="btn btn-secondary" onclick="captureFromUrl()">🔗 URL에서 썸네일 가져오기</button>
+      </div>
+
+      <div class="capture-preview" id="capturePreview" style="display: none;">
+        <img id="capturedImage" src="" alt="캡처 이미지">
+        <div class="time-info" id="captureTimeInfo"></div>
+        <button class="btn" onclick="useCaptureForComment()">이 이미지로 코멘트 작성</button>
+      </div>
+
+      <div class="thumbnail-gallery" id="thumbnailGallery"></div>
     </div>
 
     <!-- ===== AI SECTION ===== -->
@@ -672,15 +795,10 @@
           <input type="radio" name="aiModel" id="gpt4" value="gpt-4">
           <label for="gpt4">GPT-4 (품질 좋음)</label>
         </div>
-        <div class="ai-option">
-          <input type="radio" name="aiModel" id="claude" value="claude">
-          <label for="claude">Claude (품질 좋음)</label>
-        </div>
       </div>
 
       <div class="form-actions">
         <button class="btn" onclick="refineWithAI()">✨ AI로 코멘트 다듬기</button>
-        <button class="btn btn-secondary" onclick="generateFromVideo()">🎬 영상 설명 기반 자동 생성</button>
       </div>
     </div>
 
@@ -711,7 +829,7 @@
 
         <div class="form-row">
           <label for="commentContent">내용</label>
-          <textarea id="commentContent" placeholder="코칭 코멘트를 작성하세요...&#10;&#10;예:&#10;- 선수 이름: 정교형&#10;- 잘한 점: 스페이싱을 잘 지켰다&#10;- 개선점: 패스 후 무브가 필요하다"></textarea>
+          <textarea id="commentContent" placeholder="코칭 코멘트를 작성하세요..."></textarea>
         </div>
 
         <div class="form-actions">
@@ -729,8 +847,26 @@
         <div class="empty-state">
           <div class="icon">📝</div>
           <p>아직 작성된 코멘트가 없습니다.</p>
-          <p style="font-size: 12px; margin-top: 8px;">영상을 재생하고 타임라인을 설정한 후 코멘트를 작성해보세요.</p>
+          <p style="font-size: 12px; margin-top: 8px;">영상의 구간을 캡처하고 코멘트를 작성해보세요.</p>
         </div>
+      </div>
+    </div>
+
+    <!-- ===== PUBLISH SECTION ===== -->
+    <div class="publish-section">
+      <h2 class="section-title">
+        <span class="icon">🌐</span>
+        HTML로 정리 & 게시
+      </h2>
+      <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+        작성된 코멘트와 WebP 이미지를 HTML 파일로 정리하여 다운로드합니다.
+      </p>
+      <button class="btn" onclick="publishComments()">📄 HTML로 내보내기</button>
+      
+      <div class="publish-preview" id="publishPreview" style="display: none;">
+        <h3>생성된 HTML 미리보기</h3>
+        <textarea id="htmlOutput" readonly></textarea>
+        <button class="btn" onclick="downloadHtml()" style="margin-top: 12px;">💾 HTML 파일 다운로드</button>
       </div>
     </div>
   </div>
@@ -741,8 +877,8 @@
   let comments = [];
   let currentStartTime = 0;
   let currentEndTime = 0;
-  let player = null;
-  let playerReady = false;
+  let capturedImages = []; // {id, dataUrl, startTime, endTime}
+  let currentCaptureId = null;
 
   // ===== YOUTUBE API =====
   const tag = document.createElement('script');
@@ -767,7 +903,6 @@
     return localStorage.getItem('openai_api_key') || '';
   }
 
-  // Load saved API key on page load
   window.addEventListener('DOMContentLoaded', () => {
     const savedKey = getApiKey();
     if (savedKey) {
@@ -826,12 +961,6 @@
   }
 
   function setCurrentTime() {
-    const iframe = document.getElementById('youtubePlayer');
-    if (!iframe.contentWindow) {
-      alert('먼저 영상을 불러와주세요.');
-      return;
-    }
-
     const timeInput = prompt('현재 시간을 초 단위로 입력하세요 (예: 65 = 1분 5초):');
     if (!timeInput) return;
 
@@ -842,7 +971,7 @@
     }
 
     currentStartTime = currentTime;
-    currentEndTime = currentTime + 10; // 기본 10초 구간
+    currentEndTime = currentTime + 10;
 
     updateTimeDisplay();
   }
@@ -859,6 +988,110 @@
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   }
 
+  // ===== CAPTURE FUNCTIONS =====
+  function captureFrame() {
+    const videoId = extractVideoId(document.getElementById('youtubeUrl').value);
+    if (!videoId) {
+      alert('먼저 영상을 불러와주세요.');
+      return;
+    }
+
+    if (currentStartTime === 0 && currentEndTime === 0) {
+      alert('타임라인을 먼저 설정해주세요.');
+      return;
+    }
+
+    // YouTube 썸네일 URL 생성 (WebP 형식)
+    const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+    
+    const capture = {
+      id: Date.now(),
+      dataUrl: thumbnailUrl,
+      startTime: currentStartTime,
+      endTime: currentEndTime,
+      videoId: videoId
+    };
+
+    capturedImages.push(capture);
+    currentCaptureId = capture.id;
+
+    showCapturePreview(capture);
+    renderThumbnailGallery();
+  }
+
+  function captureFromUrl() {
+    const videoId = extractVideoId(document.getElementById('youtubeUrl').value);
+    if (!videoId) {
+      alert('먼저 영상을 불러와주세요.');
+      return;
+    }
+
+    // YouTube 썸네일 URL 생성
+    const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+    
+    const capture = {
+      id: Date.now(),
+      dataUrl: thumbnailUrl,
+      startTime: currentStartTime || 0,
+      endTime: currentEndTime || 10,
+      videoId: videoId
+    };
+
+    capturedImages.push(capture);
+    currentCaptureId = capture.id;
+
+    showCapturePreview(capture);
+    renderThumbnailGallery();
+  }
+
+  function showCapturePreview(capture) {
+    const preview = document.getElementById('capturePreview');
+    const img = document.getElementById('capturedImage');
+    const timeInfo = document.getElementById('captureTimeInfo');
+
+    img.src = capture.dataUrl;
+    timeInfo.textContent = `구간: ${formatTime(capture.startTime)} - ${formatTime(capture.endTime)}`;
+    preview.style.display = 'block';
+  }
+
+  function renderThumbnailGallery() {
+    const gallery = document.getElementById('thumbnailGallery');
+    
+    if (capturedImages.length === 0) {
+      gallery.innerHTML = '';
+      return;
+    }
+
+    gallery.innerHTML = capturedImages.map(cap => `
+      <div class="thumbnail-item" onclick="selectCapture(${cap.id})">
+        <img src="${cap.dataUrl}" alt="캡처">
+        <div class="thumb-info">${formatTime(cap.startTime)} - ${formatTime(cap.endTime)}</div>
+      </div>
+    `).join('');
+  }
+
+  function selectCapture(id) {
+    const capture = capturedImages.find(c => c.id === id);
+    if (capture) {
+      currentCaptureId = id;
+      showCapturePreview(capture);
+    }
+  }
+
+  function useCaptureForComment() {
+    if (!currentCaptureId) {
+      alert('캡처 이미지를 먼저 선택해주세요.');
+      return;
+    }
+
+    const capture = capturedImages.find(c => c.id === currentCaptureId);
+    if (capture) {
+      document.getElementById('commentTitle').value = `코칭 코멘트 - ${formatTime(capture.startTime)}`;
+      document.getElementById('commentContent').value = `[캡처 구간: ${formatTime(capture.startTime)} - ${formatTime(capture.endTime)}]\n\n`;
+      document.getElementById('commentContent').focus();
+    }
+  }
+
   // ===== AI FUNCTIONS =====
   async function refineWithAI() {
     const apiKey = getApiKey();
@@ -867,10 +1100,7 @@
       return;
     }
 
-    const title = document.getElementById('commentTitle').value.trim();
     const content = document.getElementById('commentContent').value.trim();
-    const type = document.getElementById('commentType').value;
-
     if (!content) {
       alert('코멘트 내용을 입력해주세요.');
       return;
@@ -878,15 +1108,9 @@
 
     const model = document.querySelector('input[name="aiModel"]:checked').value;
     
-    let systemPrompt = `You are a basketball coaching assistant. Refine and improve the following coaching comment to be more professional, encouraging, and actionable. 
+    const systemPrompt = `You are a basketball coaching assistant. Refine and improve the following coaching comment to be more professional, encouraging, and actionable. 
     Keep the original meaning but make it more impactful and suitable for a coaching environment.
     Use Korean language.`;
-    
-    if (model === 'claude') {
-      // For Claude, we'll use OpenAI-compatible endpoint or show a message
-      alert('Claude API는 현재 준비 중입니다. GPT-3.5 또는 GPT-4를 사용해주세요.');
-      return;
-    }
 
     try {
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -919,62 +1143,6 @@
     }
   }
 
-  async function generateFromVideo() {
-    const apiKey = getApiKey();
-    if (!apiKey) {
-      alert('OpenAI API 키를 입력해주세요.');
-      return;
-    }
-
-    const videoUrl = document.getElementById('youtubeUrl').value.trim();
-    if (!videoUrl) {
-      alert('YouTube 영상을 먼저 불러와주세요.');
-      return;
-    }
-
-    const model = document.querySelector('input[name="aiModel"]:checked').value;
-    
-    if (model === 'claude') {
-      alert('Claude API는 현재 준비 중입니다. GPT-3.5 또는 GPT-4를 사용해주세요.');
-      return;
-    }
-
-    const prompt = `Based on this basketball coaching video URL: ${videoUrl}, 
-    generate a coaching comment about what happens around the ${formatTime(currentStartTime)} mark. 
-    Focus on basketball fundamentals, spacing, or defensive/offensive actions.
-    Write in Korean, keep it concise (2-3 sentences), and make it actionable.`;
-
-    try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          model: model,
-          messages: [
-            { role: 'user', content: prompt }
-          ],
-          temperature: 0.8,
-          max_tokens: 300
-        })
-      });
-
-      const data = await response.json();
-      if (data.choices && data.choices[0]) {
-        const generatedContent = data.choices[0].message.content;
-        document.getElementById('commentContent').value = generatedContent;
-        document.getElementById('commentTitle').value = `AI 생성 코멘트 - ${formatTime(currentStartTime)}`;
-        alert('AI가 영상 기반 코멘트를 생성했습니다!');
-      } else {
-        throw new Error('API 응답 오류');
-      }
-    } catch (error) {
-      alert('AI 처리 중 오류가 발생했습니다: ' + error.message);
-    }
-  }
-
   // ===== COMMENT FUNCTIONS =====
   function addComment() {
     const title = document.getElementById('commentTitle').value.trim();
@@ -986,11 +1154,6 @@
       return;
     }
 
-    if (currentStartTime === 0 && currentEndTime === 0) {
-      alert('타임라인을 먼저 설정해주세요.');
-      return;
-    }
-
     const comment = {
       id: Date.now(),
       title,
@@ -998,6 +1161,7 @@
       content,
       startTime: currentStartTime,
       endTime: currentEndTime,
+      captureId: currentCaptureId,
       createdAt: new Date().toISOString()
     };
 
@@ -1038,81 +1202,36 @@
         <div class="empty-state">
           <div class="icon">📝</div>
           <p>아직 작성된 코멘트가 없습니다.</p>
-          <p style="font-size: 12px; margin-top: 8px;">영상을 재생하고 타임라인을 설정한 후 코멘트를 작성해보세요.</p>
+          <p style="font-size: 12px; margin-top: 8px;">영상의 구간을 캡처하고 코멘트를 작성해보세요.</p>
         </div>
       `;
       return;
     }
 
-    list.innerHTML = comments.map(comment => `
-      <div class="comment-item">
-        <div class="comment-header">
-          <div class="comment-meta">
-            <span class="comment-time">${formatTime(comment.startTime)} - ${formatTime(comment.endTime)}</span>
-            <span class="comment-type">${getTypeLabel(comment.type)}</span>
+    list.innerHTML = comments.map(comment => {
+      const capture = capturedImages.find(c => c.id === comment.captureId);
+      const thumbHtml = capture ? `<img src="${capture.dataUrl}" alt="캡처" class="comment-thumbnail">` : '';
+      
+      return `
+        <div class="comment-item">
+          <div class="comment-header">
+            <div class="comment-meta">
+              <span class="comment-time">${formatTime(comment.startTime)} - ${formatTime(comment.endTime)}</span>
+              <span class="comment-type">${getTypeLabel(comment.type)}</span>
+            </div>
+          </div>
+          ${thumbHtml}
+          <div class="comment-content">
+            <strong>${escapeHtml(comment.title)}</strong><br>
+            ${escapeHtml(comment.content).replace(/\n/g, '<br>')}
+          </div>
+          <div class="comment-actions">
+            <button class="comment-btn" onclick="editComment(${comment.id})">✏️ 수정</button>
+            <button class="comment-btn" onclick="deleteComment(${comment.id})">🗑️ 삭제</button>
           </div>
         </div>
-        <div class="comment-content">
-          <strong>${escapeHtml(comment.title)}</strong><br>
-          ${escapeHtml(comment.content).replace(/\n/g, '<br>')}
-        </div>
-        <div class="comment-actions">
-          <button class="comment-btn" onclick="editComment(${comment.id})">✏️ 수정</button>
-          <button class="comment-btn" onclick="deleteComment(${comment.id})">🗑️ 삭제</button>
-          <button class="comment-btn" onclick="exportComment(${comment.id})">📤 내보내기</button>
-          <button class="comment-btn ai-btn" onclick="refineSingleComment(${comment.id})">🤖 AI 다듬기</button>
-        </div>
-      </div>
-    `).join('');
-  }
-
-  async function refineSingleComment(id) {
-    const comment = comments.find(c => c.id === id);
-    if (!comment) return;
-
-    const apiKey = getApiKey();
-    if (!apiKey) {
-      alert('OpenAI API 키를 입력해주세요.');
-      return;
-    }
-
-    const model = document.querySelector('input[name="aiModel"]:checked').value;
-    if (model === 'claude') {
-      alert('Claude API는 현재 준비 중입니다. GPT-3.5 또는 GPT-4를 사용해주세요.');
-      return;
-    }
-
-    const systemPrompt = `You are a basketball coaching assistant. Refine this coaching comment to be more professional and impactful. Keep the original meaning. Use Korean.`;
-
-    try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          model: model,
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: comment.content }
-          ],
-          temperature: 0.7,
-          max_tokens: 500
-        })
-      });
-
-      const data = await response.json();
-      if (data.choices && data.choices[0]) {
-        comment.content = data.choices[0].message.content;
-        renderComments();
-        alert('AI가 코멘트를 다듬었습니다!');
-      } else {
-        throw new Error('API 응답 오류');
-      }
-    } catch (error) {
-      alert('AI 처리 중 오류가 발생했습니다: ' + error.message);
-    }
+      `;
+    }).join('');
   }
 
   function getTypeLabel(type) {
@@ -1131,34 +1250,49 @@
     return div.innerHTML;
   }
 
-  function exportComment(id) {
-    const comment = comments.find(c => c.id === id);
-    if (!comment) return;
+  // ===== PUBLISH FUNCTIONS =====
+  function publishComments() {
+    if (comments.length === 0) {
+      alert('게시할 코멘트가 없습니다.');
+      return;
+    }
 
-    const html = generateCommentHTML(comment);
-    const blob = new Blob([html], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `comment-${comment.id}.html`;
-    a.click();
-    URL.revokeObjectURL(url);
+    const html = generateHtmlDocument();
+    document.getElementById('htmlOutput').value = html;
+    document.getElementById('publishPreview').style.display = 'block';
   }
 
-  function generateCommentHTML(comment) {
+  function generateHtmlDocument() {
+    const commentsHtml = comments.map(comment => {
+      const capture = capturedImages.find(c => c.id === comment.captureId);
+      const thumbHtml = capture ? `<img src="${capture.dataUrl}" alt="캡처" style="max-width: 100%; border-radius: 8px; margin-bottom: 12px;">` : '';
+      
+      return `
+        <div class="comment-card">
+          <div class="comment-header">
+            <span class="comment-time">${formatTime(comment.startTime)} - ${formatTime(comment.endTime)}</span>
+            <span class="comment-type">${getTypeLabel(comment.type)}</span>
+          </div>
+          ${thumbHtml}
+          <div class="comment-title">${escapeHtml(comment.title)}</div>
+          <div class="comment-content">${escapeHtml(comment.content)}</div>
+        </div>
+      `;
+    }).join('\n');
+
     return `<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${escapeHtml(comment.title)}</title>
+<title>코칭 코멘트 - 노바토 야호팀</title>
 <style>
   body {
     font-family: 'Noto Sans KR', sans-serif;
     background: #0D0D0D;
     color: #F5F5F5;
     padding: 40px 20px;
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
   }
   .comment-card {
@@ -1166,7 +1300,8 @@
     border: 1px solid #2A2A2A;
     border-radius: 12px;
     padding: 24px;
-    border-left: 3px solid ${getTypeColor(comment.type)};
+    border-left: 3px solid ${getTypeColor(comments[0]?.type || 'good-play')};
+    margin-bottom: 20px;
   }
   .comment-header {
     display: flex;
@@ -1198,17 +1333,24 @@
     color: #AAAAAA;
     white-space: pre-wrap;
   }
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #2A2A2A;
+  }
+  .header h1 {
+    font-size: 28px;
+    color: #FF6B00;
+  }
 </style>
 </head>
 <body>
-  <div class="comment-card">
-    <div class="comment-header">
-      <span class="comment-time">${formatTime(comment.startTime)} - ${formatTime(comment.endTime)}</span>
-      <span class="comment-type">${getTypeLabel(comment.type)}</span>
-    </div>
-    <div class="comment-title">${escapeHtml(comment.title)}</div>
-    <div class="comment-content">${escapeHtml(comment.content)}</div>
+  <div class="header">
+    <h1>🏀 코칭 코멘트 - 노바토 야호팀</h1>
+    <p style="color: #AAAAAA;">총 ${comments.length}개의 코멘트</p>
   </div>
+  ${commentsHtml}
 </body>
 </html>`;
   }
@@ -1221,6 +1363,17 @@
       'defense': '#A855F7'
     };
     return colors[type] || '#FF6B00';
+  }
+
+  function downloadHtml() {
+    const html = document.getElementById('htmlOutput').value;
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `coaching-comments-${Date.now()}.html`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   // 초기화
